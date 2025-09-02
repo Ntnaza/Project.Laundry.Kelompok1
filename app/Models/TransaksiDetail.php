@@ -9,20 +9,25 @@ class TransaksiDetail extends Model
 {
     use HasFactory;
 
-    public $timestamps = false; // Tabel ini tidak menggunakan created_at/updated_at
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'transaksi_id',
         'paket_id',
         'kuantitas',
+        'harga', // <-- PASTIKAN BARIS INI ADA
         'subtotal',
     ];
 
     /**
-     * Relasi ke model Paket.
+     * Mendapatkan paket yang terkait dengan detail transaksi.
      */
     public function paket()
     {
-        return $this->belongsTo(Paket::class, 'paket_id');
+        return $this->belongsTo(Paket::class);
     }
 }
+

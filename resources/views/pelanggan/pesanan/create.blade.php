@@ -9,7 +9,28 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-10">
+    {{-- UBAH KELAS DI BAWAH INI DARI col-lg-10 MENJADI col-lg-12 --}}
+    <div class="col-lg-12">
+
+        <!-- BLOK UNTUK MENAMPILKAN ERROR -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Terjadi Kesalahan!</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        <!-- BATAS BLOK ERROR -->
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Formulir Pemesanan</h6>
@@ -30,9 +51,6 @@
                                     </option>
                                 @endforeach
                             </select>
-                            @error('paket_id')
-                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                            @enderror
                         </div>
                     </div>
 
@@ -42,20 +60,14 @@
                         <div class="col-sm-9">
                             <input id="kuantitas" type="number" step="0.1" class="form-control @error('kuantitas') is-invalid @enderror" name="kuantitas" value="{{ old('kuantitas') }}" required placeholder="Contoh: 5.5">
                             <small id="unit" class="form-text text-muted">Masukkan jumlah (Kg/Pcs)</small>
-                            @error('kuantitas')
-                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                            @enderror
                         </div>
                     </div>
 
-                    {{-- BARIS BARU UNTUK KODE DISKON --}}
+                    {{-- Baris untuk Kode Diskon --}}
                     <div class="form-group row">
                         <label for="kode_diskon" class="col-sm-3 col-form-label">{{ __('Kode Diskon (Opsional)') }}</label>
                         <div class="col-sm-9">
-                            <input id="kode_diskon" type="text" class="form-control @error('kode_diskon') is-invalid @enderror" name="kode_diskon" value="{{ old('kode_diskon') }}" placeholder="Masukkan kode diskon jika ada">
-                             @error('kode_diskon')
-                                <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
-                            @enderror
+                            <input id="kode_diskon" type="text" class="form-control" name="kode_diskon" value="{{ old('kode_diskon') }}" placeholder="Masukkan kode diskon jika ada">
                         </div>
                     </div>
 
@@ -69,7 +81,7 @@
 
                     <hr>
                     
-                    {{-- TAMPILAN BARU UNTUK RINCIAN HARGA --}}
+                    {{-- Baris untuk Rincian Harga --}}
                     <div class="form-group row">
                         <div class="col-sm-9 offset-sm-3">
                             <h5 class="font-weight-bold">Rincian Harga:</h5>
@@ -109,7 +121,6 @@
 @endsection
 
 @push('scripts')
-{{-- SCRIPT INI TIDAK PERLU DIUBAH KARENA PERHITUNGAN AKAN DILAKUKAN DI BACKEND --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const paketSelect = document.getElementById('paket_id');
@@ -139,7 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const subtotal = harga * kuantitas;
         
         subtotalEl.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
-        totalBayarEl.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal); // Tampilkan subtotal sebagai total sementara
+        // Note: Diskon akan dihitung di server, jadi di sini kita tampilkan subtotal saja
+        totalBayarEl.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
     }
 
     paketSelect.addEventListener('change', hitungEstimasi);

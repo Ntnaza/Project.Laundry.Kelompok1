@@ -1,11 +1,16 @@
+<!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.pengaturan.edit') }}">
+        <div class="sidebar-brand-icon">
+            @if ($pengaturan && $pengaturan->logo)
+                <img src="{{ asset('storage/' . $pengaturan->logo) }}" alt="Logo" style="height: 40px; border-radius: 50%;">
+            @else
+                <i class="fas fa-laugh-wink"></i>
+            @endif
         </div>
-        <div class="sidebar-brand-text mx-3">Laundry</div>
+        <div class="sidebar-brand-text mx-3">{{ $pengaturan->nama_laundry ?? 'Laundry' }}</div>
     </a>
 
     <!-- Divider -->
@@ -68,6 +73,22 @@
     </li>
 
     <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Pengaturan
+    </div>
+
+    <!-- Nav Item - Profil Laundry -->
+    <li class="nav-item {{ request()->routeIs('admin.pengaturan.*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('admin.pengaturan.edit') }}">
+            <i class="fas fa-fw fa-store"></i>
+            <span>Profil Laundry</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
     <!-- Sidebar Toggler (Sidebar) -->
@@ -76,3 +97,4 @@
     </div>
 
 </ul>
+<!-- End of Sidebar -->

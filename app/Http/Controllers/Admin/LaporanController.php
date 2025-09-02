@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Transaksi;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use PDF;
+use App\Models\Transaksi;
+use PDF; // <-- PASTIKAN BARIS INI ADA
 
 class LaporanController extends Controller
 {
@@ -19,33 +18,31 @@ class LaporanController extends Controller
     }
 
     /**
-     * Memproses data dan mencetak laporan berdasarkan filter.
+     * Memproses filter dan mencetak laporan ke PDF.
      */
     public function cetak(Request $request)
     {
-        // Validasi input tanggal
         $request->validate([
             'tgl_mulai' => 'required|date',
             'tgl_akhir' => 'required|date|after_or_equal:tgl_mulai',
         ]);
 
-        $tgl_mulai = Carbon::parse($request->tgl_mulai)->startOfDay();
-        $tgl_akhir = Carbon::parse($request->tgl_akhir)->endOfDay();
+        $tgl_mulai = $request->tgl_mulai;
+        $tgl_akhir = $request->tgl_akhir;
 
-        // Ambil data transaksi dalam rentang tanggal yang dipilih
-        $laporans = Transaksi::with('pelanggan')
-                             ->whereBetween('tgl_masuk', [$tgl_mulai, $tgl_akhir])
-                             ->where('status', 'Diambil') // Hanya laporan dari transaksi yang sudah lunas
-                             ->get();
-
+        // Ambil data transaksi berdasarkan rentang tanggal dan status 'Diambil'
+        $transaksis = Transaksi::whereBetween('tgl_masuk', [$tgl_mulai, $tgl_akhir])
+                               ->where('status', 'Diambil')
+                               ->orderBy('tgl_masuk', 'asc')
+                               ->get();
+        
         // Hitung total pendapatan dari data yang difilter
-        $totalPendapatan = $laporans->sum('total_harga');
+        $totalPendapatan = $transaksis->sum('total_bayar');
 
-        // Data untuk dikirim ke view PDF
         $data = [
-            'laporans' => $laporans,
-            'tgl_mulai' => $tgl_mulai,
-            'tgl_akhir' => $tgl_akhir,
+            'transaksis' => $transaksis,
+            'tgl_mulai'  => $tgl_mulai,
+            'tgl_akhir'  => $tgl_akhir,
             'totalPendapatan' => $totalPendapatan,
         ];
 
@@ -53,6 +50,7 @@ class LaporanController extends Controller
         $pdf = PDF::loadView('admin.laporan.cetak_pdf', $data);
         
         // Tampilkan atau unduh PDF
-        return $pdf->stream('laporan-pendapatan-'.$tgl_mulai->format('d-m-Y').'-'.$tgl_akhir->format('d-m-Y').'.pdf');
+        return $pdf->stream('laporan-transaksi-'.$tgl_mulai.'-'.$tgl_akhir.'.pdf');
     }
 }
+

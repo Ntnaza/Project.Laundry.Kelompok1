@@ -100,7 +100,7 @@
                                 <th>Kode</th>
                                 <th>Pelanggan</th>
                                 <th>Tgl Masuk</th>
-                                <th>Total</th>
+                                <th>Total Bayar</th> <!-- PERBAIKAN DI SINI -->
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -110,7 +110,7 @@
                                 <td><a href="{{ route('admin.transaksi.show', $transaksi->id) }}">{{ $transaksi->kode_transaksi }}</a></td>
                                 <td>{{ $transaksi->pelanggan->name }}</td>
                                 <td>{{ $transaksi->tgl_masuk->format('d M Y') }}</td>
-                                <td>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($transaksi->total_bayar, 0, ',', '.') }}</td> <!-- PERBAIKAN DI SINI -->
                                 <td>
                                     @if($transaksi->status == 'Baru')
                                         <span class="badge badge-primary">{{ $transaksi->status }}</span>

@@ -11,7 +11,6 @@
     </a>
 </div>
 
-<!-- Tampilkan notifikasi jika ada -->
 @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
@@ -34,7 +33,6 @@
                         <thead>
                             <tr>
                                 <th>Nama Paket</th>
-                                <th>Jenis</th>
                                 <th>Kuantitas</th>
                                 <th>Harga</th>
                                 <th>Subtotal</th>
@@ -44,7 +42,6 @@
                             @foreach($transaksi->details as $detail)
                             <tr>
                                 <td>{{ $detail->paket->nama_paket }}</td>
-                                <td>{{ $detail->paket->jenis }}</td>
                                 <td>{{ $detail->kuantitas }} {{ $detail->paket->jenis == 'Kiloan' ? 'Kg' : 'Pcs' }}</td>
                                 <td>Rp {{ number_format($detail->paket->harga, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
@@ -53,8 +50,16 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="4" class="text-right">Grand Total:</th>
-                                <th>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</th>
+                                <th colspan="3" class="text-right">Subtotal:</th>
+                                <th>Rp {{ number_format($transaksi->subtotal, 0, ',', '.') }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="3" class="text-right">Diskon:</th>
+                                <th>- Rp {{ number_format($transaksi->jumlah_diskon, 0, ',', '.') }}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="3" class="text-right">Total Bayar:</th>
+                                <th class="text-primary">Rp {{ number_format($transaksi->total_bayar, 0, ',', '.') }}</th>
                             </tr>
                         </tfoot>
                     </table>
@@ -65,7 +70,6 @@
 
     <!-- Kolom Kanan: Info Pelanggan & Status -->
     <div class="col-md-5">
-        <!-- Informasi Pelanggan -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Informasi Pelanggan</h6>
@@ -77,8 +81,6 @@
                 <p><strong>Alamat:</strong> {{ $transaksi->pelanggan->alamat }}</p>
             </div>
         </div>
-
-        <!-- Status & Aksi -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Status & Aksi</h6>
@@ -97,9 +99,7 @@
                 </p>
                 <p><strong>Tanggal Masuk:</strong> {{ $transaksi->tgl_masuk->format('d F Y') }}</p>
                 <p><strong>Tanggal Selesai:</strong> {{ $transaksi->tgl_selesai ? $transaksi->tgl_selesai->format('d F Y') : 'Belum Selesai' }}</p>
-                
                 <hr>
-                
                 <form action="{{ route('admin.transaksi.updateStatus', $transaksi->id) }}" method="POST" class="mb-3">
                     @csrf
                     <div class="form-group">
@@ -112,7 +112,6 @@
                     </div>
                     <button type="submit" class="btn btn-info btn-block">Update Status</button>
                 </form>
-
                 <a href="{{ route('admin.transaksi.cetakInvoice', $transaksi->id) }}" target="_blank" class="btn btn-success btn-block">
                     <i class="fa fa-print"></i> Cetak Invoice
                 </a>
@@ -121,3 +120,4 @@
     </div>
 </div>
 @endsection
+        

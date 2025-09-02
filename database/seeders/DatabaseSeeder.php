@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,9 +11,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Panggil AdminUserSeeder
-        $this->call(AdminUserSeeder::class);
-
-        // Anda bisa menambahkan seeder lain di sini jika perlu
+        $this->call([
+            AdminUserSeeder::class,
+            PengaturanSeeder::class, // Tambahkan baris ini
+        ]);
     }
 }
+

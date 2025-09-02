@@ -1,4 +1,4 @@
-@extends('layouts.pelanggan') {{-- Menggunakan layout baru --}}
+@extends('layouts.pelanggan')
 
 @section('title', 'Dasbor Pelanggan')
 
@@ -37,7 +37,7 @@
 <!-- Tabel Riwayat Pesanan -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">5 Pesanan Terakhir Anda</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Riwayat Pesanan Anda</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -46,8 +46,9 @@
                     <tr>
                         <th>Kode Transaksi</th>
                         <th>Tanggal Pesan</th>
-                        <th>Total Harga</th>
+                        <th>Total Bayar</th>
                         <th>Status</th>
+                        <th>Aksi</th> {{-- KOLOM BARU --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -55,7 +56,7 @@
                         <tr>
                             <td>{{ $transaksi->kode_transaksi }}</td>
                             <td>{{ $transaksi->tgl_masuk->format('d M Y') }}</td>
-                            <td>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($transaksi->total_bayar, 0, ',', '.') }}</td>
                             <td>
                                 @if($transaksi->status == 'Baru')
                                     <span class="badge badge-primary">{{ $transaksi->status }}</span>
@@ -67,15 +68,27 @@
                                     <span class="badge badge-secondary">{{ $transaksi->status }}</span>
                                 @endif
                             </td>
+                            {{-- TOMBOL BARU --}}
+                            <td>
+                                <a href="{{ route('pelanggan.pesanan.show', $transaksi->id) }}" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> Detail
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">Anda belum memiliki riwayat pesanan.</td>
+                            {{-- Sesuaikan colspan menjadi 5 --}}
+                            <td colspan="5" class="text-center">Anda belum memiliki riwayat pesanan.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+        {{-- Menampilkan Paginasi --}}
+        <div class="d-flex justify-content-center">
+            {{ $transaksis->links() }}
+        </div>
     </div>
 </div>
 @endsection
+

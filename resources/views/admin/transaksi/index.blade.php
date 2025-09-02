@@ -45,7 +45,7 @@
                         <th>Kode Transaksi</th>
                         <th>Nama Pelanggan</th>
                         <th>Tanggal Masuk</th>
-                        <th>Total Harga</th>
+                        <th>Total Bayar</th> {{-- UBAH INI --}}
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
@@ -57,7 +57,7 @@
                             <td>{{ $transaksi->kode_transaksi }}</td>
                             <td>{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                             <td>{{ $transaksi->tgl_masuk->format('d M Y') }}</td>
-                            <td>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($transaksi->total_bayar, 0, ',', '.') }}</td> {{-- UBAH INI --}}
                             <td>
                                 @if($transaksi->status == 'Baru')
                                     <span class="badge badge-primary">{{ $transaksi->status }}</span>

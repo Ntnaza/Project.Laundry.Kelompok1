@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth; // Pastikan use statement ini ada
 
 class LoginController extends Controller
 {
@@ -25,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/dashboard-pelanggan';
+    // protected $redirectTo = '/home'; // Baris ini tidak lagi kita perlukan
 
     /**
      * Create a new controller instance.
@@ -35,6 +36,28 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->middleware('auth')->only('logout');
+    }
+
+    /**
+     * Redirect user to the correct dashboard based on their role.
+     *
+     * @return string
+     */
+    public function redirectTo()
+    {
+        $role = Auth::user()->role; 
+
+        switch ($role) {
+            case 'admin':
+                return '/admin/dashboard';
+                break; 
+            case 'pelanggan':
+                return '/dashboard-pelanggan';
+                break;
+            default:
+                return '/login'; 
+                break;
+        }
     }
 }
+
